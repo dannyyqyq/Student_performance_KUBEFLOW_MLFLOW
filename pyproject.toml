@@ -3,5 +3,16 @@ name = "student-performance-kubeflow-mlflow"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.13"
-dependencies = []
+requires-python = ">=3.12"
+dependencies = [
+    "catboost>=1.2.8",
+    "dill>=0.4.0",
+    "flask>=3.1.2",
+    "mlflow>=3.4.0",
+    "numpy>=2.3.3",
+    "pandas>=2.3.2",
+    "pyyaml>=6.0.2",
+    "scikit-learn>=1.7.2",
+    "seaborn>=0.13.2",
+    "xgboost>=3.0.5",
+]
