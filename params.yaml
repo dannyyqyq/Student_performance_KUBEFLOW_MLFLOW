@@ -1,0 +1,8 @@
+data:
+  test_size: 0.3
+model:
+  n_estimators: 100
+  max_depth: 5
+model_comparison:
+  primary_metric: r2_score
+  improvement_threshold: 0.05
