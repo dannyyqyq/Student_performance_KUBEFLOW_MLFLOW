@@ -1,22 +1,47 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
-import yaml
-import os
+import json
+from loguru import logger
 
-def ingest_data(data_path, params_path, output_dir):
-    # Load params
-    with open(params_path, "r") as f:
-        params = yaml.safe_load(f)
-    # Load dataset
-    df = pd.read_csv(data_path)
-    # Clean: Drop missing values (customize based on your dataset)
+def main():
+    logger.add(sys.stdout, colorize=True, format="<green>{time:HH:mm:ss}</green> | <level>{level}</level> | {message}")
+
+    raw_data_path = "/data/student.csv"  
+    output_data_path = "/tmp/data.csv"
+    metadata_path = "/tmp/ingest_metadata.json"
+
+    logger.info(f"Starting ingestion process...")
+    logger.info(f"Reading raw data from {raw_data_path}")
+
+    try:
+        df = pd.read_csv(raw_data_path)
+    except FileNotFoundError:
+        logger.error(f"File not found: {raw_data_path}")
+        return
+
+    logger.info(f"Raw data loaded: {len(df)} rows, {len(df.columns)} columns")
+
+    # Simplified cleaning
     df = df.dropna()
-    # Split data
-    train_df, test_df = train_test_split(df, test_size=params["data"]["test_size"], random_state=42)
-    # Save outputs
-    os.makedirs(output_dir, exist_ok=True)
-    train_df.to_csv(f"{output_dir}/train.csv", index=False)
-    test_df.to_csv(f"{output_dir}/test.csv", index=False)
+    logger.info(f"After dropping NA: {len(df)} rows")
+
+    # Save cleaned data
+    df.to_csv(output_data_path, index=False)
+    logger.info(f"Cleaned data saved to {output_data_path}")
+
+    # Save metadata
+    metadata = {
+        "rows": len(df),
+        "columns": df.columns.tolist(),
+        "raw_data_path": raw_data_path,
+        "output_data_path": output_data_path
+    }
+
+    with open(metadata_path, "w") as f:
+        json.dump(metadata, f)
+
+    logger.info(f"Metadata saved to {metadata_path}")
+    logger.info("Ingestion completed!!!")
 
 if __name__ == "__main__":
-    ingest_data("/input/data.csv", "/input/params.yaml", "/output")
+    import sys
+    main()

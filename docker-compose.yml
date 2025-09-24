@@ -1,0 +1,25 @@
+services:
+  ingest:
+    image: ingest:py3.13
+    container_name: ingest_container
+    volumes:
+      - ./data:/tmp
+    restart: "no"
+
+  transform:
+    image: transform:py3.13
+    container_name: transform_container
+    volumes:
+      - ./data:/tmp
+    depends_on:
+      - ingest
+    restart: "no"
+
+  train:
+    image: train:py3.13
+    container_name: train_container
+    volumes:
+      - ./data:/tmp
+    depends_on:
+      - transform
+    restart: "no"
